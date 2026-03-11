@@ -806,6 +806,7 @@ a:hover {
     font-size: 50px;
     font-weight: bold;
     line-height: 1.2;
+    white-space: nowrap;
 }
 
 @media screen and (max-width: 600px) {
