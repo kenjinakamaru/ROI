@@ -171,7 +171,7 @@
                             </div>
                         </div>
 
-                        <div class="p-roi-simulator__payback">
+                        <div class="p-roi-simulator__payback" style="flex-direction:column; align-items:center; text-align:center;">
                             <span class="material-icons p-roi-simulator__payback-icon">timer</span>
                             <div class="p-roi-simulator__payback-content">
                                 <div class="p-roi-simulator__payback-label">投資回収期間</div>
@@ -292,7 +292,11 @@
         // ROIシミュレーター
         (function () {
             function formatNumber(num) {
-                return '¥' + Math.round(num).toLocaleString('ja-JP');
+                const rounded = Math.round(num);
+                if (rounded < 0) {
+                    return '-¥' + Math.abs(rounded).toLocaleString('ja-JP');
+                }
+                return '¥' + rounded.toLocaleString('ja-JP');
             }
             function formatPercent(num) {
                 return Math.round(num) + '%';
@@ -321,15 +325,9 @@
                 const monthlyNetReduction = monthlyReduction - monthlyCost;
                 const annualROI = annualCost > 0 ? (annualNetReduction / annualCost) * 100 : 0;
 
-                let paybackPeriodText = '0ヶ月';
-                if (monthlyReduction > 0) {
-                    const paybackPeriodRaw = monthlyCost / monthlyReduction;
-                    if (paybackPeriodRaw < 1) {
-                        paybackPeriodText = '1ヶ月未満';
-                    } else {
-                        const paybackPeriod = Math.ceil(paybackPeriodRaw);
-                        paybackPeriodText = paybackPeriod + 'ヶ月';
-                    }
+                let paybackPeriodText = '-';
+                if (monthlyNetReduction > 0) {
+                    paybackPeriodText = '1ヶ月未満';
                 }
 
                 document.getElementById('annualReduction').textContent = formatNumber(annualNetReduction);
