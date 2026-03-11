@@ -121,10 +121,8 @@
                         </div>
 
                         <div class="p-roi-simulator__note">
-                            <!-- 修正2: 計算ロジックの根拠を明示 -->
-                            <p><span class="material-icons" style="vertical-align: middle; font-size: 1.6rem; margin-right: 4px;">lightbulb</span><strong>
-                                    計算ロジック:</strong>
-                                ディレクション業務のうち、連絡・報告・前処理などの業務が約30%を占めています。トコトン導入により、この30%を約10%まで圧縮できるため、ディレクション時間全体の約20%削減を想定しています。スプレッドシートで既に効率化している企業様でも、1日30分以上の削減を実現しています。</p>
+                            <p><span class="material-icons" style="vertical-align: middle; font-size: 1.6rem; margin-right: 4px;">lightbulb</span><strong>計算ロジック:</strong>
+                                ディレクション業務のうち、連絡・報告・前処理などの業務が約30%を占めています。トコトン導入により、これを約10%に圧縮できるため、ディレクション時間全体の約20%削減できる想定です。</p>
                         </div>
                     </div>
 
@@ -135,12 +133,13 @@
                         <div class="p-roi-simulator__result-main">
                             <span class="material-icons p-roi-simulator__result-icon">savings</span>
                             <div class="p-roi-simulator__result-content">
-                                <div class="p-roi-simulator__result-label">年間削減コスト</div>
+                                <div class="p-roi-simulator__result-label">年間純削減効果</div>
                                 <div class="p-roi-simulator__result-value-wrapper">
                                     <div class="p-roi-simulator__result-value" id="annualReduction">¥384,000</div>
-                                    <div class="p-roi-simulator__result-value-sub" id="monthlyReduction">(月間: ¥32,000)</div>
+                                    <div class="p-roi-simulator__result-value-sub" id="monthlyReduction">(月間純削減: ¥32,000)</div>
                                 </div>
                             </div>
+                            <div style="text-align:center; font-size:0.72em; color:#fff; opacity:0.75; margin-top:6px; width:100%;">※月額¥50,000の利用費を差し引いた純削減額</div>
                         </div>
 
                         <div class="p-roi-simulator__result-grid">
@@ -173,15 +172,13 @@
                         <div class="p-roi-simulator__payback">
                             <span class="material-icons p-roi-simulator__payback-icon">timer</span>
                             <div class="p-roi-simulator__payback-content">
-                                <div class="p-roi-simulator__payback-label">投資回収期間(想定月額5万円の場合)</div>
+                                <div class="p-roi-simulator__payback-label">投資回収期間</div>
                                 <div class="p-roi-simulator__payback-value" id="paybackPeriod">2ヶ月</div>
                             </div>
                         </div>
                         <div class="p-roi-simulator__note">
-                            <!-- 修正3: 結果パネルの計算ロジックも同様に修正 -->
-                            <p><span class="material-icons" style="vertical-align: middle; font-size: 1.6rem; margin-right: 4px;">lightbulb</span><strong>
-                                    計算ロジック:</strong>
-                                ディレクション業務のうち、連絡・報告・前処理などの業務が約30%を占めています。トコトン導入により、この30%を約10%まで圧縮できるため、ディレクション時間全体の約20%削減を想定しています。スプレッドシートで既に効率化している企業様でも、1日30分以上の削減を実現しています。</p>
+                            <p><span class="material-icons" style="vertical-align: middle; font-size: 1.6rem; margin-right: 4px;">lightbulb</span><strong>計算ロジック:</strong>
+                                ディレクション業務のうち、連絡・報告・前処理などの業務が約30%を占めています。トコトン導入により、これを約10%に圧縮できるため、ディレクション時間全体の約20%削減できる想定です。</p>
                         </div>
                     </div>
                 </div>
@@ -316,8 +313,10 @@
                 const annualHours = monthlyHours * 12;
 
                 const monthlyCost = 50000;
-                const monthlyROI = monthlyCost > 0 ? (monthlyReduction / monthlyCost) * 100 : 0;
-                const annualROI = monthlyROI;
+                const annualCost = monthlyCost * 12;
+                const annualNetReduction = annualReduction - annualCost;
+                const monthlyNetReduction = monthlyReduction - monthlyCost;
+                const annualROI = annualCost > 0 ? (annualNetReduction / annualCost) * 100 : 0;
 
                 let paybackPeriodText = '0ヶ月';
                 if (monthlyReduction > 0) {
@@ -330,9 +329,9 @@
                     }
                 }
 
-                document.getElementById('annualReduction').textContent = formatNumber(annualReduction);
-                document.getElementById('monthlyReduction').textContent = '(月間: ' + formatNumber(monthlyReduction) + ')';
-                document.getElementById('monthlyROI').textContent = formatPercent(monthlyROI);
+                document.getElementById('annualReduction').textContent = formatNumber(annualNetReduction);
+                document.getElementById('monthlyReduction').textContent = '(月間純削減: ' + formatNumber(monthlyNetReduction) + ')';
+                document.getElementById('monthlyROI').textContent = formatPercent(annualROI);
                 document.getElementById('perPersonMonthly').textContent = formatNumber(monthlyReductionPerPerson);
                 document.getElementById('annualHoursNum').textContent = Math.round(annualHours);
                 document.getElementById('monthlyHoursNum').textContent = Math.round(monthlyHours);
