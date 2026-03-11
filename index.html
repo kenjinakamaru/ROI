@@ -172,10 +172,11 @@
                         </div>
 
                         <div class="p-roi-simulator__payback" style="flex-direction:column; align-items:center; text-align:center;">
-                            <span class="material-icons p-roi-simulator__payback-icon">timer</span>
+                            <span class="material-icons p-roi-simulator__payback-icon">balance</span>
                             <div class="p-roi-simulator__payback-content">
-                                <div class="p-roi-simulator__payback-label">投資回収期間</div>
-                                <div class="p-roi-simulator__payback-value" id="paybackPeriod">2ヶ月</div>
+                                <div class="p-roi-simulator__payback-label">損益分岐点</div>
+                                <div class="p-roi-simulator__payback-value" id="paybackPeriod">ディレクター 2人 / 1日 4.5時間</div>
+                                <div id="paybackComment" style="font-size:0.78em; margin-top:6px; opacity:0.85;"></div>
                             </div>
                         </div>
                         <div class="p-roi-simulator__note">
@@ -328,9 +329,21 @@
                 const monthlyNetReduction = monthlyReduction - monthlyCost;
                 const annualROI = annualCost > 0 ? (annualNetReduction / annualCost) * 100 : 0;
 
-                let paybackPeriodText = '-';
+                // 損益分岐点：最低必要人数・時間（0.5刻みで切り上げ）
+                const minDirectors = Math.ceil(monthlyCost / monthlyReductionPerPerson);
+                const rawMinHours = monthlyCost / (directorCount * 0.2 * 20 * hourlyRate);
+                const minHours = Math.ceil(rawMinHours * 2) / 2;
+
+                let paybackPeriodText, paybackCommentText;
                 if (monthlyNetReduction > 0) {
-                    paybackPeriodText = '1ヶ月未満';
+                    paybackPeriodText = '達成済み ✓';
+                    paybackCommentText = '現在の条件で月間' + formatNumber(monthlyNetReduction) + 'の純利益';
+                } else {
+                    let parts = [];
+                    if (minDirectors <= 20) parts.push('ディレクター ' + minDirectors + '人');
+                    if (minHours <= 8) parts.push('1日 ' + minHours.toFixed(1) + '時間');
+                    paybackPeriodText = parts.length > 0 ? parts.join(' / ') : '-';
+                    paybackCommentText = '上記の条件を満たすと黒字化します';
                 }
 
                 document.getElementById('annualReduction').textContent = formatNumber(annualNetReduction);
@@ -340,6 +353,8 @@
                 document.getElementById('annualHoursNum').textContent = Math.round(annualHours);
                 document.getElementById('monthlyHoursNum').textContent = Math.round(monthlyHours);
                 document.getElementById('paybackPeriod').textContent = paybackPeriodText;
+                document.getElementById('paybackComment').style.whiteSpace = 'pre-line';
+                document.getElementById('paybackComment').textContent = paybackCommentText;
             }
 
             function updateSliderDisplay() {
